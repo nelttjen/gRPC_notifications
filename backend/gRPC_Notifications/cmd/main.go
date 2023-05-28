@@ -2,13 +2,13 @@ package main
 
 import (
 	"log"
-	app "notification_grpc/pkg/app"
+	"notification_grpc/pkg/app"
 )
 
 func main() {
-	err := app.NewApp().Run()
-	panic("PANIIIICA")
-	if err != nil {
+	newApp := app.NewApp()
+
+	if err := newApp.Run(); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
 	}
 }
