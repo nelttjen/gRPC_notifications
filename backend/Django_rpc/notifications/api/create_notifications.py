@@ -15,10 +15,14 @@ class CreateNotificationsView(APIView):
         channel = grpc.insecure_channel('127.0.0.1:55000')
         stub = pb2_grpc.CreateNotificationsStub(channel=channel)
 
-        response = stub.CreateModels(pb2.NotificationCreateRequest(**{
+        payload = {
             "user_ids": example_users,
             "text": example_text
-        }))
+        }
 
-        print(response)
+        stub_response: pb2.NotificationCreateResponse = stub.CreateNotificationsForUsers(
+            pb2.NotificationCreateRequest(**payload)
+        )
+
+        print(stub_response)
         return Response("ok")

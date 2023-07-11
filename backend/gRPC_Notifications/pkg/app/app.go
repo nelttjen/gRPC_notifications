@@ -6,8 +6,8 @@ import (
 	"net"
 	v1 "notification_grpc/api"
 	"notification_grpc/internal/config"
-	notificationRPC "notification_grpc/pkg/grpc/notifications"
-	"notification_grpc/pkg/utills/env"
+	notificationRPC "notification_grpc/internal/grpc/notifications"
+	"notification_grpc/pkg/env"
 )
 
 var _ App = &app{}

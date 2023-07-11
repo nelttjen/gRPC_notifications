@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"notification_grpc/pkg/utills/env"
+	"notification_grpc/pkg/env"
 )
 
 var _ Connection = &connection{}

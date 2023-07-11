@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import rpc.notifications_pb2 as notifications__pb2
+import notifications_pb2 as notifications__pb2
 
 
 class CreateNotificationsStub(object):
@@ -14,17 +14,72 @@ class CreateNotificationsStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CreateModels = channel.unary_unary(
-                '/api.CreateNotifications/CreateModels',
+        self.CreateNotificationsAction = channel.unary_unary(
+                '/api.CreateNotifications/CreateNotificationsAction',
                 request_serializer=notifications__pb2.NotificationCreateRequest.SerializeToString,
                 response_deserializer=notifications__pb2.NotificationCreateResponse.FromString,
+                )
+        self.Create = channel.unary_unary(
+                '/api.CreateNotifications/Create',
+                request_serializer=notifications__pb2.NotificationCreateManualRequest.SerializeToString,
+                response_deserializer=notifications__pb2.NotificationCreateResponse.FromString,
+                )
+        self.GetNotifications = channel.unary_unary(
+                '/api.CreateNotifications/GetNotifications',
+                request_serializer=notifications__pb2.UserNotificationsRequest.SerializeToString,
+                response_deserializer=notifications__pb2.UserNotificationsResponse.FromString,
+                )
+        self.GetMassNotification = channel.unary_unary(
+                '/api.CreateNotifications/GetMassNotification',
+                request_serializer=notifications__pb2.UserMassNotificationRequest.SerializeToString,
+                response_deserializer=notifications__pb2.UserMassNotificationResponse.FromString,
+                )
+        self.DeleteNotifications = channel.unary_unary(
+                '/api.CreateNotifications/DeleteNotifications',
+                request_serializer=notifications__pb2.NotificationManageRequest.SerializeToString,
+                response_deserializer=notifications__pb2.NotificationManageResponse.FromString,
+                )
+        self.MarkAsReadNotifications = channel.unary_unary(
+                '/api.CreateNotifications/MarkAsReadNotifications',
+                request_serializer=notifications__pb2.NotificationManageRequest.SerializeToString,
+                response_deserializer=notifications__pb2.NotificationManageResponse.FromString,
                 )
 
 
 class CreateNotificationsServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CreateModels(self, request, context):
+    def CreateNotificationsAction(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Create(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetNotifications(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMassNotification(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteNotifications(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MarkAsReadNotifications(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,10 +88,35 @@ class CreateNotificationsServicer(object):
 
 def add_CreateNotificationsServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CreateModels': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateModels,
+            'CreateNotificationsAction': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateNotificationsAction,
                     request_deserializer=notifications__pb2.NotificationCreateRequest.FromString,
                     response_serializer=notifications__pb2.NotificationCreateResponse.SerializeToString,
+            ),
+            'Create': grpc.unary_unary_rpc_method_handler(
+                    servicer.Create,
+                    request_deserializer=notifications__pb2.NotificationCreateManualRequest.FromString,
+                    response_serializer=notifications__pb2.NotificationCreateResponse.SerializeToString,
+            ),
+            'GetNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetNotifications,
+                    request_deserializer=notifications__pb2.UserNotificationsRequest.FromString,
+                    response_serializer=notifications__pb2.UserNotificationsResponse.SerializeToString,
+            ),
+            'GetMassNotification': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMassNotification,
+                    request_deserializer=notifications__pb2.UserMassNotificationRequest.FromString,
+                    response_serializer=notifications__pb2.UserMassNotificationResponse.SerializeToString,
+            ),
+            'DeleteNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteNotifications,
+                    request_deserializer=notifications__pb2.NotificationManageRequest.FromString,
+                    response_serializer=notifications__pb2.NotificationManageResponse.SerializeToString,
+            ),
+            'MarkAsReadNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkAsReadNotifications,
+                    request_deserializer=notifications__pb2.NotificationManageRequest.FromString,
+                    response_serializer=notifications__pb2.NotificationManageResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -49,7 +129,7 @@ class CreateNotifications(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CreateModels(request,
+    def CreateNotificationsAction(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +139,93 @@ class CreateNotifications(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/CreateModels',
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/CreateNotificationsAction',
             notifications__pb2.NotificationCreateRequest.SerializeToString,
             notifications__pb2.NotificationCreateResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Create(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/Create',
+            notifications__pb2.NotificationCreateManualRequest.SerializeToString,
+            notifications__pb2.NotificationCreateResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetNotifications(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/GetNotifications',
+            notifications__pb2.UserNotificationsRequest.SerializeToString,
+            notifications__pb2.UserNotificationsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetMassNotification(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/GetMassNotification',
+            notifications__pb2.UserMassNotificationRequest.SerializeToString,
+            notifications__pb2.UserMassNotificationResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteNotifications(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/DeleteNotifications',
+            notifications__pb2.NotificationManageRequest.SerializeToString,
+            notifications__pb2.NotificationManageResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def MarkAsReadNotifications(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/MarkAsReadNotifications',
+            notifications__pb2.NotificationManageRequest.SerializeToString,
+            notifications__pb2.NotificationManageResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
