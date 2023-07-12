@@ -8,13 +8,12 @@ from notifications.modules.gRPC import BaseRPCRequestClass
 
 
 class NotificationActionRPC(BaseRPCRequestClass):
-    def __init__(self, notification_action, target_id, target_type, notification_type, action,
+    def __init__(self, action, target_id, target_type, not_type,
                  important=False, link=None, image=None, text=None):
-        self.notification_action = notification_action
+        self.action = action
         self.target_id = target_id
         self.target_type = target_type
-        self.notification_type = notification_type
-        self.action = action
+        self.type = not_type
         self.important = important
         self.link = link
         self.image = image
@@ -25,14 +24,14 @@ class NotificationActionRPC(BaseRPCRequestClass):
         stub = pb2_grpc.CreateNotificationsStub(channel=channel)
 
         request = NotificationAction(
-            notification_action=self.notification_action,
+            action=self.action,
             target_id=self.target_id,
             target_type=self.target_type,
-            notification_type=self.notification_type,
+            type=self.type,
             important=self.important,
             link=self.link,
             image=self.image,
-            text=self.text
+            text=self.text,
         ).as_grpc_request()
 
         response = stub.CreateNotificationsAction(request)

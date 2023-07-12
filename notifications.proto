@@ -20,8 +20,8 @@ service CreateNotifications {
 
 message NotificationCreateRequest {
   string action = 1;
-  int64 target_id = 2;
-  string target_type = 3;
+  optional int64 target_id = 2;
+  optional sint32 target_type = 3;
   bool important = 4;
 
   int32 type = 5;

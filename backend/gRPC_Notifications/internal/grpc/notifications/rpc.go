@@ -30,14 +30,13 @@ func (s *NotificationService) CreateNotificationsAction(ctx context.Context, req
 	response = &v1.NotificationCreateResponse{
 		IsCreated: false,
 	}
-
 	dbConn, err := PrepareTransaction()
 
 	if err != nil {
 		return
 	}
 
-	response.IsCreated = true
+	response.IsCreated = ProcessActionRequest(dbConn, req)
 	return response, nil
 }
 
@@ -46,7 +45,7 @@ func (s *NotificationService) CreateNotificationsForUsers(ctx context.Context, r
 		IsCreated: false,
 	}
 
-	dbConn, err := PrepareTransaction()
+	//dbConn, err := PrepareTransaction()
 
 	if err != nil {
 		return

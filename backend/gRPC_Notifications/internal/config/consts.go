@@ -3,6 +3,9 @@ package config
 const PORT = ":55000"
 const PROTOCOL = "tcp"
 
-const ACTION_USER_CREATED = 1
-const ACTION_USER_2 = 2
-const ACTION_USER_3 = 3
+const ActionTitleNewName = "title_new_name"
+const ActionTitleNewChapter = "title_new_chapter"
+const ActionSiteNotification = "site_notification"
+const ActionChapterFree = "title_chapter_free"
+
+const EnvRoot = "/home/artemy/PycharmProjects/gRPC_notifications/backend/.env"

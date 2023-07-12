@@ -34,8 +34,8 @@ type connection struct {
 	password string
 	database string
 
-	dbConnection  *gorm.DB
-	dbTransaction *gorm.DB
+	DBConnection  *gorm.DB
+	DBTransaction *gorm.DB
 }
 
 type Connection interface {
@@ -44,6 +44,8 @@ type Connection interface {
 	ExecTransaction(operation string, values []interface{}) error
 	CommitTransaction()
 	RollbackTransaction(endTransaction bool)
+
+	GetDBConnection() (*gorm.DB, error)
 }
 
 func NewConnection() Connection {
@@ -75,42 +77,50 @@ func (c *connection) MakeConnection() error {
 	if err != nil {
 		return err
 	}
-	c.dbConnection = conn
+	c.DBConnection = conn
 	return nil
 }
 
 func (c *connection) NewTransaction() error {
-	if c.dbConnection == nil {
+	if c.DBConnection == nil {
 		return &NoConnectionError{}
 	}
 
-	if c.dbTransaction != nil {
+	if c.DBTransaction != nil {
 		return &TransactionExists{}
 	}
 
-	c.dbTransaction = c.dbConnection.Begin()
+	c.DBTransaction = c.DBConnection.Begin()
 
 	return nil
 }
 
 func (c *connection) CommitTransaction() {
-	c.dbTransaction.Commit()
+	c.DBTransaction.Commit()
 
-	c.dbTransaction = nil
+	c.DBTransaction = nil
 }
 
 func (c *connection) RollbackTransaction(endTransaction bool) {
-	c.dbTransaction.Rollback()
+	c.DBTransaction.Rollback()
 
 	if endTransaction {
-		c.dbTransaction = nil
+		c.DBTransaction = nil
 	}
 }
 
 func (c *connection) ExecTransaction(operation string, values []interface{}) error {
-	if c.dbTransaction == nil {
+	if c.DBTransaction == nil {
 		return &NoTransactionError{}
 	}
-	c.dbTransaction.Exec(operation, values)
+	c.DBTransaction.Exec(operation, values)
 	return nil
+}
+
+func (c *connection) GetDBConnection() (*gorm.DB, error) {
+
+	if c.DBConnection == nil {
+		return nil, &NoConnectionError{}
+	}
+	return c.DBConnection, nil
 }

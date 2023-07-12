@@ -6,6 +6,7 @@ import (
 	"net"
 	v1 "notification_grpc/api"
 	"notification_grpc/internal/config"
+	cfg "notification_grpc/internal/config"
 	notificationRPC "notification_grpc/internal/grpc/notifications"
 	"notification_grpc/pkg/env"
 )
@@ -49,7 +50,7 @@ func (a *app) Run() (err error) {
 	if err != nil {
 		return err
 	}
-	err = a.LoadEnv("../.env")
+	err = a.LoadEnv(cfg.EnvRoot)
 	if err != nil {
 		log.Fatalf("Failed to load .env file: %v", err)
 		return err

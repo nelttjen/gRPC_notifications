@@ -38,8 +38,8 @@ class UserNotifications(models.Model, NotificationBase):
 
     class Meta:
         db_table = 'user_notifications'
-        verbose_name = 'Увед'
-        verbose_name_plural = 'Уведы'
+        verbose_name = 'Уведомление пользователя'
+        verbose_name_plural = 'Уведомления пользователей'
 
 
 class UserMassNotifications(models.Model):
@@ -47,6 +47,11 @@ class UserMassNotifications(models.Model):
     notification = models.ForeignKey(verbose_name='Уведомление', to='notifications.MassNotifications', on_delete=models.CASCADE)
 
     read = models.BooleanField(verbose_name='Прочитано?', default=False)
+
+    class Meta:
+        db_table = 'user_mass_notifications'
+        verbose_name = 'Рассылка пользователя'
+        verbose_name_plural = 'Рассылки пользователю'
 
 
 class MassNotifications(models.Model, NotificationBase):
@@ -64,6 +69,11 @@ class MassNotifications(models.Model, NotificationBase):
     type = models.IntegerField(verbose_name='Тип списка', choices=types)
     action = models.IntegerField(verbose_name='Действие', choices=actions, default=1)
 
+    class Meta:
+        db_table = 'mass_notifications'
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
+
 
 class CommentMock(models.Model):
     user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
@@ -73,19 +83,39 @@ class CommentMock(models.Model):
 
     date = models.DateTimeField(verbose_name='Дата', auto_now_add=True)
 
+    class Meta:
+        db_table = 'comments'
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
 
 class TitleMock(models.Model):
     name = models.CharField(verbose_name='Название', max_length=128)
+
+    class Meta:
+        db_table = 'titles'
+        verbose_name = 'Тайтл'
+        verbose_name_plural = 'Тайтлы'
 
 
 class ChapterMock(models.Model):
     index = models.IntegerField(verbose_name='Номер главы')
     title = models.ForeignKey(verbose_name='Тайтл', to='notifications.TitleMock', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'chapters'
+        verbose_name = 'Глава'
+        verbose_name_plural = 'Главы'
+
 
 class BillingMock(models.Model):
     user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
     sum = models.DecimalField(verbose_name='Сумма', max_digits=10, decimal_places=2)
+
+    class Meta:
+        db_table = 'billings'
+        verbose_name = 'Пополнение'
+        verbose_name_plural = 'Пополнения'
 
 
 class SpecialOfferMock(models.Model):
@@ -93,10 +123,37 @@ class SpecialOfferMock(models.Model):
     need_sum = models.DecimalField(verbose_name='Нужная сумма', max_digits=10, decimal_places=2)
     reward = models.DecimalField(verbose_name='Награда', max_digits=10, decimal_places=2)
 
+    class Meta:
+        db_table = 'special_offers'
+        verbose_name = 'Специльное предложение'
+        verbose_name_plural = 'Специальные предложения'
+
 
 class BadgeMock(models.Model):
     user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
     name = models.CharField(verbose_name='Название', max_length=128)
+
+    class Meta:
+        db_table = 'badges'
+        verbose_name = 'Бейдж'
+        verbose_name_plural = 'Бейджи'
+
+
+class TitleBookmark(models.Model):
+    categories = (
+        (1, 'Категория 1'),
+        (2, 'Категория 2'),
+        (3, 'Категория 3'),
+    )
+    user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
+    title = models.ForeignKey(verbose_name='Тайтл', to='notifications.TitleMock', on_delete=models.CASCADE)
+
+    category = models.IntegerField(verbose_name='Вкладка', choices=categories)
+
+    class Meta:
+        db_table = 'title_bookmarks'
+        verbose_name = 'Вкладка'
+        verbose_name_plural = 'Вкладки'
 
 
 @receiver(post_save, sender=User)

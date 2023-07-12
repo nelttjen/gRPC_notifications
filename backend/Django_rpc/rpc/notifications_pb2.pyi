@@ -1,4 +1,4 @@
-import struct_pb2 as _struct_pb2
+import rpc.struct_pb2 as _struct_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -63,10 +63,10 @@ class NotificationCreateRequest(_message.Message):
     important: bool
     link: str
     target_id: int
-    target_type: str
+    target_type: int
     text: str
     type: int
-    def __init__(self, action: _Optional[str] = ..., target_id: _Optional[int] = ..., target_type: _Optional[str] = ..., important: bool = ..., type: _Optional[int] = ..., link: _Optional[str] = ..., image: _Optional[str] = ..., text: _Optional[str] = ...) -> None: ...
+    def __init__(self, action: _Optional[str] = ..., target_id: _Optional[int] = ..., target_type: _Optional[int] = ..., important: bool = ..., type: _Optional[int] = ..., link: _Optional[str] = ..., image: _Optional[str] = ..., text: _Optional[str] = ...) -> None: ...
 
 class NotificationCreateResponse(_message.Message):
     __slots__ = ["is_created"]
