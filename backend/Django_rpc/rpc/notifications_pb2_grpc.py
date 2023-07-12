@@ -19,8 +19,8 @@ class CreateNotificationsStub(object):
                 request_serializer=notifications__pb2.NotificationCreateRequest.SerializeToString,
                 response_deserializer=notifications__pb2.NotificationCreateResponse.FromString,
                 )
-        self.Create = channel.unary_unary(
-                '/api.CreateNotifications/Create',
+        self.CreateNotificationForUsers = channel.unary_unary(
+                '/api.CreateNotifications/CreateNotificationForUsers',
                 request_serializer=notifications__pb2.NotificationCreateManualRequest.SerializeToString,
                 response_deserializer=notifications__pb2.NotificationCreateResponse.FromString,
                 )
@@ -29,18 +29,18 @@ class CreateNotificationsStub(object):
                 request_serializer=notifications__pb2.UserNotificationsRequest.SerializeToString,
                 response_deserializer=notifications__pb2.UserNotificationsResponse.FromString,
                 )
-        self.GetMassNotification = channel.unary_unary(
-                '/api.CreateNotifications/GetMassNotification',
+        self.GetMassNotifications = channel.unary_unary(
+                '/api.CreateNotifications/GetMassNotifications',
                 request_serializer=notifications__pb2.UserMassNotificationRequest.SerializeToString,
                 response_deserializer=notifications__pb2.UserMassNotificationResponse.FromString,
                 )
-        self.DeleteNotifications = channel.unary_unary(
-                '/api.CreateNotifications/DeleteNotifications',
+        self.MarkAsReadNotifications = channel.unary_unary(
+                '/api.CreateNotifications/MarkAsReadNotifications',
                 request_serializer=notifications__pb2.NotificationManageRequest.SerializeToString,
                 response_deserializer=notifications__pb2.NotificationManageResponse.FromString,
                 )
-        self.MarkAsReadNotifications = channel.unary_unary(
-                '/api.CreateNotifications/MarkAsReadNotifications',
+        self.DeleteNotifications = channel.unary_unary(
+                '/api.CreateNotifications/DeleteNotifications',
                 request_serializer=notifications__pb2.NotificationManageRequest.SerializeToString,
                 response_deserializer=notifications__pb2.NotificationManageResponse.FromString,
                 )
@@ -55,7 +55,7 @@ class CreateNotificationsServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Create(self, request, context):
+    def CreateNotificationForUsers(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -67,19 +67,19 @@ class CreateNotificationsServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetMassNotification(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DeleteNotifications(self, request, context):
+    def GetMassNotifications(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def MarkAsReadNotifications(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteNotifications(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -93,8 +93,8 @@ def add_CreateNotificationsServicer_to_server(servicer, server):
                     request_deserializer=notifications__pb2.NotificationCreateRequest.FromString,
                     response_serializer=notifications__pb2.NotificationCreateResponse.SerializeToString,
             ),
-            'Create': grpc.unary_unary_rpc_method_handler(
-                    servicer.Create,
+            'CreateNotificationForUsers': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateNotificationForUsers,
                     request_deserializer=notifications__pb2.NotificationCreateManualRequest.FromString,
                     response_serializer=notifications__pb2.NotificationCreateResponse.SerializeToString,
             ),
@@ -103,18 +103,18 @@ def add_CreateNotificationsServicer_to_server(servicer, server):
                     request_deserializer=notifications__pb2.UserNotificationsRequest.FromString,
                     response_serializer=notifications__pb2.UserNotificationsResponse.SerializeToString,
             ),
-            'GetMassNotification': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetMassNotification,
+            'GetMassNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMassNotifications,
                     request_deserializer=notifications__pb2.UserMassNotificationRequest.FromString,
                     response_serializer=notifications__pb2.UserMassNotificationResponse.SerializeToString,
             ),
-            'DeleteNotifications': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteNotifications,
+            'MarkAsReadNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkAsReadNotifications,
                     request_deserializer=notifications__pb2.NotificationManageRequest.FromString,
                     response_serializer=notifications__pb2.NotificationManageResponse.SerializeToString,
             ),
-            'MarkAsReadNotifications': grpc.unary_unary_rpc_method_handler(
-                    servicer.MarkAsReadNotifications,
+            'DeleteNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteNotifications,
                     request_deserializer=notifications__pb2.NotificationManageRequest.FromString,
                     response_serializer=notifications__pb2.NotificationManageResponse.SerializeToString,
             ),
@@ -146,7 +146,7 @@ class CreateNotifications(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def Create(request,
+    def CreateNotificationForUsers(request,
             target,
             options=(),
             channel_credentials=None,
@@ -156,7 +156,7 @@ class CreateNotifications(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/Create',
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/CreateNotificationForUsers',
             notifications__pb2.NotificationCreateManualRequest.SerializeToString,
             notifications__pb2.NotificationCreateResponse.FromString,
             options, channel_credentials,
@@ -180,7 +180,7 @@ class CreateNotifications(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def GetMassNotification(request,
+    def GetMassNotifications(request,
             target,
             options=(),
             channel_credentials=None,
@@ -190,26 +190,9 @@ class CreateNotifications(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/GetMassNotification',
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/GetMassNotifications',
             notifications__pb2.UserMassNotificationRequest.SerializeToString,
             notifications__pb2.UserMassNotificationResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DeleteNotifications(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/DeleteNotifications',
-            notifications__pb2.NotificationManageRequest.SerializeToString,
-            notifications__pb2.NotificationManageResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -225,6 +208,23 @@ class CreateNotifications(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/MarkAsReadNotifications',
+            notifications__pb2.NotificationManageRequest.SerializeToString,
+            notifications__pb2.NotificationManageResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteNotifications(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/DeleteNotifications',
             notifications__pb2.NotificationManageRequest.SerializeToString,
             notifications__pb2.NotificationManageResponse.FromString,
             options, channel_credentials,

@@ -2,6 +2,7 @@ package notifications
 
 import (
 	"context"
+	"log"
 	v1 "notification_grpc/api"
 	"notification_grpc/pkg/database"
 )
@@ -10,8 +11,8 @@ type NotificationService struct {
 	v1.UnimplementedCreateNotificationsServer
 }
 
-func PrepareTransaction() (conn database.Connection, err error) {
-	dbConn := database.NewConnection()
+func PrepareTransaction() (conn database.PostgresConnection, err error) {
+	dbConn := database.NewPostgresConnection()
 	err = dbConn.MakeConnection()
 
 	if err != nil {
@@ -35,6 +36,8 @@ func (s *NotificationService) CreateNotificationsAction(ctx context.Context, req
 	if err != nil {
 		return
 	}
+
+	log.Printf(req.String())
 
 	response.IsCreated = ProcessActionRequest(dbConn, req)
 	return response, nil

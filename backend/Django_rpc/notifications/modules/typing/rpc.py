@@ -8,7 +8,7 @@ from typing import Optional
 class NotificationAction(pydantic.BaseModel):
     action: str
     target_id: Optional[int]
-    target_type: Optional[str]
+    target_type: Optional[int]
     important: bool = pydantic.Field(default=False)
 
     type: int
@@ -30,4 +30,10 @@ class NotificationAction(pydantic.BaseModel):
             if getattr(self, item) is not None:
                 data[item] = getattr(self, item)
 
+        # print(data)
+        # pb2.NotificationCreateRequest(
+        #     action=self.action,
+        #     target_id=self.target_id,
+        #     target_type=self.target_type
+        # )
         return pb2.NotificationCreateRequest(**data)

@@ -7,7 +7,7 @@ import (
 	"notification_grpc/pkg/env"
 )
 
-var _ Connection = &connection{}
+var _ PostgresConnection = &connection{}
 
 type NoConnectionError struct{}
 
@@ -38,17 +38,18 @@ type connection struct {
 	DBTransaction *gorm.DB
 }
 
-type Connection interface {
+type PostgresConnection interface {
 	MakeConnection() error
 	NewTransaction() error
 	ExecTransaction(operation string, values []interface{}) error
-	CommitTransaction()
+	CommitTransaction(endTransaction bool)
 	RollbackTransaction(endTransaction bool)
 
 	GetDBConnection() (*gorm.DB, error)
+	GetDBTransaction() (*gorm.DB, error)
 }
 
-func NewConnection() Connection {
+func NewPostgresConnection() PostgresConnection {
 	newEnv := env.NewEnv()
 	host, _ := newEnv.GetEnvAsString("POSTGRES_HOST", "127.0.0.1")
 	port, _ := newEnv.GetEnvAsInt("POSTGRES_PORT", 5432)
@@ -95,10 +96,12 @@ func (c *connection) NewTransaction() error {
 	return nil
 }
 
-func (c *connection) CommitTransaction() {
+func (c *connection) CommitTransaction(endTransaction bool) {
 	c.DBTransaction.Commit()
 
-	c.DBTransaction = nil
+	if endTransaction {
+		c.DBTransaction = nil
+	}
 }
 
 func (c *connection) RollbackTransaction(endTransaction bool) {
@@ -123,4 +126,11 @@ func (c *connection) GetDBConnection() (*gorm.DB, error) {
 		return nil, &NoConnectionError{}
 	}
 	return c.DBConnection, nil
+}
+
+func (c *connection) GetDBTransaction() (*gorm.DB, error) {
+	if c.DBTransaction == nil {
+		return nil, &NoTransactionError{}
+	}
+	return c.DBTransaction, nil
 }

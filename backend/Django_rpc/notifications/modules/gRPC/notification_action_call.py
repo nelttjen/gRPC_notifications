@@ -34,6 +34,8 @@ class NotificationActionRPC(BaseRPCRequestClass):
             text=self.text,
         ).as_grpc_request()
 
+
+        print(request.target_type)
         response = stub.CreateNotificationsAction(request)
         self.process_response(response)
         return response

@@ -1,17 +1,16 @@
 package notifications
 
-import (
-	"time"
-)
+import "time"
 
-type Notification struct {
-	ID     uint      `gorm:"column:id"`
-	UserId int       `gorm:"column:user_id"`
-	Image  string    `gorm:"column:image"`
-	Text   string    `gorm:"column:text"`
-	Link   string    `gorm:"column:link"`
-	Type   int       `gorm:"column:type"`
-	Action int       `gorm:"column:action"`
-	Status bool      `gorm:"column:status"`
-	Date   time.Time `gorm:"column:date"`
+type MassNotification struct {
+	ID         uint64    `gorm:"column:id"`
+	TargetId   uint64    `gorm:"column:target_id"`
+	TargetType uint32    `gorm:"column:target_type"`
+	Image      string    `gorm:"column:image"`
+	Text       string    `gorm:"column:text"`
+	Link       string    `gorm:"column:link"`
+	Important  bool      `gorm:"column:important"`
+	Type       int32     `gorm:"column:type"`
+	Action     int32     `gorm:"column:action"`
+	Date       time.Time `gorm:"column:date"`
 }

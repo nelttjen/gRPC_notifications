@@ -8,7 +8,13 @@ from notifications.modules.typing.user_not_setts import UserNotificationConfig
 from drpc.settings import MONGODB_AUTHPARAMS
 
 
-class NotificationBase:
+# Create your models here.
+class UserNotifications(models.Model):
+    user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
+
+    confirmation = models.BooleanField(verbose_name='Нужно подтвердить?', default=False)
+    read = models.BooleanField(verbose_name='Прочитано?', default=False)
+
     targets = (
         (1, 'Тайтл'),
         (2, 'Глава'),
@@ -28,14 +34,6 @@ class NotificationBase:
     date = models.DateTimeField(verbose_name='Дата', auto_now_add=True)
     important = models.BooleanField(verbose_name='Важный увед?', default=False)
 
-
-# Create your models here.
-class UserNotifications(models.Model, NotificationBase):
-    user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
-
-    confirmation = models.BooleanField(verbose_name='Нужно подтвердить?', default=False)
-    read = models.BooleanField(verbose_name='Прочитано?', default=False)
-
     class Meta:
         db_table = 'user_notifications'
         verbose_name = 'Уведомление пользователя'
@@ -54,7 +52,7 @@ class UserMassNotifications(models.Model):
         verbose_name_plural = 'Рассылки пользователю'
 
 
-class MassNotifications(models.Model, NotificationBase):
+class MassNotifications(models.Model):
     types = (
         (1, 'Обновление'),
         (2, 'Социальное'),
@@ -68,6 +66,25 @@ class MassNotifications(models.Model, NotificationBase):
 
     type = models.IntegerField(verbose_name='Тип списка', choices=types)
     action = models.IntegerField(verbose_name='Действие', choices=actions, default=1)
+
+    targets = (
+        (1, 'Тайтл'),
+        (2, 'Глава'),
+        (3, 'Комментарий'),
+        (4, 'Пополнение'),
+        (5, 'Специальное предложение'),
+        (6, 'Бейдж')
+    )
+
+    image = models.CharField(verbose_name='Картинка уведомления', max_length=1000, null=True, default=None)
+    text = models.CharField(verbose_name='Текст уведомления', max_length=1000)
+    link = models.CharField(verbose_name='Ссылка', max_length=1000, null=True, default=None)
+
+    target_id = models.BigIntegerField(verbose_name='Таргет', null=True, default=None)
+    target_type = models.PositiveSmallIntegerField(verbose_name='Тип таргета', choices=targets, null=True, default=None)
+
+    important = models.BooleanField(verbose_name='Важный увед?', default=False)
+    date = models.DateTimeField(verbose_name='Дата', auto_now_add=True)
 
     class Meta:
         db_table = 'mass_notifications'

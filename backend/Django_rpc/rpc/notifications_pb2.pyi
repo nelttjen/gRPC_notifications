@@ -43,10 +43,10 @@ class NotificationCreateManualRequest(_message.Message):
     important: bool
     link: str
     target_id: int
-    target_type: str
+    target_type: int
     text: str
     user_ids: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, user_ids: _Optional[_Iterable[int]] = ..., target_id: _Optional[int] = ..., target_type: _Optional[str] = ..., text: _Optional[str] = ..., important: bool = ..., link: _Optional[str] = ..., image: _Optional[str] = ...) -> None: ...
+    def __init__(self, user_ids: _Optional[_Iterable[int]] = ..., target_id: _Optional[int] = ..., target_type: _Optional[int] = ..., text: _Optional[str] = ..., important: bool = ..., link: _Optional[str] = ..., image: _Optional[str] = ...) -> None: ...
 
 class NotificationCreateRequest(_message.Message):
     __slots__ = ["action", "image", "important", "link", "target_id", "target_type", "text", "type"]

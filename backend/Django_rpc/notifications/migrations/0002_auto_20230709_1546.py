@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import notifications.models
 
 
 class Migration(migrations.Migration):
@@ -21,7 +20,7 @@ class Migration(migrations.Migration):
                 ('type', models.IntegerField(choices=[(0, 'Обновление'), (1, 'Социальное'), (2, 'Важное')], verbose_name='Тип списка')),
                 ('action', models.IntegerField(choices=[(0, 'Действие 1'), (1, 'Действие 2'), (2, 'Действие 3')], default=1, verbose_name='Действие')),
             ],
-            bases=(models.Model, notifications.models.NotificationBase),
+            bases=(models.Model, ),
         ),
         migrations.CreateModel(
             name='TitleMock',
