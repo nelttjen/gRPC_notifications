@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 	"notification_grpc/pkg/env"
 )
 
@@ -42,8 +43,8 @@ type PostgresConnection interface {
 	MakeConnection() error
 	NewTransaction() error
 	ExecTransaction(operation string, values []interface{}) error
-	CommitTransaction(endTransaction bool)
-	RollbackTransaction(endTransaction bool)
+	CommitTransaction(endTransaction bool) error
+	RollbackTransaction(endTransaction bool) error
 
 	GetDBConnection() (*gorm.DB, error)
 	GetDBTransaction() (*gorm.DB, error)
@@ -67,18 +68,26 @@ func NewPostgresConnection() PostgresConnection {
 	return &conn
 }
 
-func (c *connection) formatConnection() string {
+func (c *connection) formatConnection(redactPassword bool) string {
+	password := "<HIDDEN>"
+
+	if !redactPassword {
+		password = c.password
+	}
+
 	return fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Europe/Moscow",
-		c.host, c.user, c.password, c.database, c.port)
+		c.host, c.user, password, c.database, c.port)
 }
 
 func (c *connection) MakeConnection() error {
-	conn, err := gorm.Open(postgres.Open(c.formatConnection()), &gorm.Config{})
+	log.Printf("INFO: Connecting to postgres database using auth string: %s\n", c.formatConnection(true))
+	conn, err := gorm.Open(postgres.Open(c.formatConnection(false)), &gorm.Config{})
 	if err != nil {
 		return err
 	}
 	c.DBConnection = conn
+	log.Printf("INFO: Connected to postgres database\n")
 	return nil
 }
 
@@ -96,27 +105,40 @@ func (c *connection) NewTransaction() error {
 	return nil
 }
 
-func (c *connection) CommitTransaction(endTransaction bool) {
+func (c *connection) CommitTransaction(endTransaction bool) error {
+	if c.DBTransaction == nil {
+		return &NoTransactionError{}
+	}
+
 	c.DBTransaction.Commit()
 
 	if endTransaction {
 		c.DBTransaction = nil
 	}
+	return nil
 }
 
-func (c *connection) RollbackTransaction(endTransaction bool) {
+func (c *connection) RollbackTransaction(endTransaction bool) error {
+	if c.DBTransaction == nil {
+		return &NoTransactionError{}
+	}
+
 	c.DBTransaction.Rollback()
 
 	if endTransaction {
 		c.DBTransaction = nil
 	}
+	return nil
 }
 
 func (c *connection) ExecTransaction(operation string, values []interface{}) error {
 	if c.DBTransaction == nil {
 		return &NoTransactionError{}
 	}
-	c.DBTransaction.Exec(operation, values)
+	c.DBTransaction.Exec(operation, values...)
+	if c.DBTransaction.Error != nil {
+		return c.DBTransaction.Error
+	}
 	return nil
 }
 

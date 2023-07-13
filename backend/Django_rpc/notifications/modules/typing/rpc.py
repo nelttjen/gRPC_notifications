@@ -1,8 +1,7 @@
 import pydantic
 import rpc.notifications_pb2 as pb2
 
-
-from typing import Optional
+from typing import Optional, List
 
 
 class NotificationAction(pydantic.BaseModel):
@@ -30,10 +29,35 @@ class NotificationAction(pydantic.BaseModel):
             if getattr(self, item) is not None:
                 data[item] = getattr(self, item)
 
-        # print(data)
-        # pb2.NotificationCreateRequest(
-        #     action=self.action,
-        #     target_id=self.target_id,
-        #     target_type=self.target_type
-        # )
         return pb2.NotificationCreateRequest(**data)
+
+
+class NotificationForUsers(pydantic.BaseModel):
+    user_ids: List[int]
+    settings_key: str
+
+    target_id: Optional[int]
+    target_type: Optional[int]
+    text: str
+    text_as_model: bool = pydantic.Field(default=True)
+    important: bool = pydantic.Field(default=False)
+    confirmation: bool = pydantic.Field(default=False)
+
+    link: Optional[str]
+    image: Optional[str]
+
+    def as_grpc_request(self) -> pb2.NotificationCreateManualRequest:
+        data = {
+            'user_ids': self.user_ids,
+            'settings_key': self.settings_key,
+            'text': self.text,
+            'text_as_model': self.text_as_model,
+            'important': self.important,
+            'confirmation': self.confirmation,
+        }
+
+        for item in ['link', 'image', 'target_id', 'target_type']:
+            if getattr(self, item) is not None:
+                data[item] = getattr(self, item)
+
+        return pb2.NotificationCreateManualRequest(**data)

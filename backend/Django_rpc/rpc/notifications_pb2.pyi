@@ -31,22 +31,28 @@ class Notification(_message.Message):
     def __init__(self, id: _Optional[int] = ..., target: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ..., target_type: _Optional[str] = ..., image: _Optional[str] = ..., link: _Optional[str] = ..., text: _Optional[str] = ..., date: _Optional[str] = ..., important: bool = ..., confirmation: bool = ..., read: bool = ...) -> None: ...
 
 class NotificationCreateManualRequest(_message.Message):
-    __slots__ = ["image", "important", "link", "target_id", "target_type", "text", "user_ids"]
+    __slots__ = ["confirmation", "image", "important", "link", "settings_key", "target_id", "target_type", "text", "text_as_model", "user_ids"]
+    CONFIRMATION_FIELD_NUMBER: _ClassVar[int]
     IMAGE_FIELD_NUMBER: _ClassVar[int]
     IMPORTANT_FIELD_NUMBER: _ClassVar[int]
     LINK_FIELD_NUMBER: _ClassVar[int]
+    SETTINGS_KEY_FIELD_NUMBER: _ClassVar[int]
     TARGET_ID_FIELD_NUMBER: _ClassVar[int]
     TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
+    TEXT_AS_MODEL_FIELD_NUMBER: _ClassVar[int]
     TEXT_FIELD_NUMBER: _ClassVar[int]
     USER_IDS_FIELD_NUMBER: _ClassVar[int]
+    confirmation: bool
     image: str
     important: bool
     link: str
+    settings_key: str
     target_id: int
     target_type: int
     text: str
+    text_as_model: bool
     user_ids: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, user_ids: _Optional[_Iterable[int]] = ..., target_id: _Optional[int] = ..., target_type: _Optional[int] = ..., text: _Optional[str] = ..., important: bool = ..., link: _Optional[str] = ..., image: _Optional[str] = ...) -> None: ...
+    def __init__(self, user_ids: _Optional[_Iterable[int]] = ..., settings_key: _Optional[str] = ..., target_id: _Optional[int] = ..., target_type: _Optional[int] = ..., text: _Optional[str] = ..., text_as_model: bool = ..., important: bool = ..., confirmation: bool = ..., link: _Optional[str] = ..., image: _Optional[str] = ...) -> None: ...
 
 class NotificationCreateRequest(_message.Message):
     __slots__ = ["action", "image", "important", "link", "target_id", "target_type", "text", "type"]

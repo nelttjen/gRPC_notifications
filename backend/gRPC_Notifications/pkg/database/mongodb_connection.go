@@ -47,7 +47,7 @@ func (c *mongoClient) MakeConnection() error {
 
 	authString := fmt.Sprintf("mongodb://%s:%d", host, port)
 
-	log.Println("Connecting to MongoDB using auth string: ", authString)
+	log.Println("INFO: Connecting to MongoDB using auth string: ", authString)
 
 	clientOptions := options.Client().ApplyURI(authString).SetAuth(options.Credential{
 		AuthMechanism: "SCRAM-SHA-256",
@@ -68,6 +68,7 @@ func (c *mongoClient) MakeConnection() error {
 	}
 
 	c.Connection = client
+	log.Printf("INFO: Connected to MongoDB succesed")
 	return nil
 }
 

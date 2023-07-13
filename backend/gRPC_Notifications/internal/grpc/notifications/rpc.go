@@ -2,7 +2,6 @@ package notifications
 
 import (
 	"context"
-	"log"
 	v1 "notification_grpc/api"
 	"notification_grpc/pkg/database"
 )
@@ -36,8 +35,6 @@ func (s *NotificationService) CreateNotificationsAction(ctx context.Context, req
 	if err != nil {
 		return
 	}
-
-	log.Printf(req.String())
 
 	response.IsCreated = ProcessActionRequest(dbConn, req)
 	return response, nil

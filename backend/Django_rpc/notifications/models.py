@@ -1,11 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from pymongo import MongoClient
 
 from notifications.modules.typing.user_not_setts import UserNotificationConfig
 from drpc.settings import MONGODB_AUTHPARAMS
+
+targets = (
+    (1, 'Тайтл'),
+    (2, 'Глава'),
+    (3, 'Комментарий'),
+    (4, 'Пополнение'),
+    (5, 'Специальное предложение'),
+    (6, 'Бейдж')
+)
 
 
 # Create your models here.
@@ -15,17 +24,11 @@ class UserNotifications(models.Model):
     confirmation = models.BooleanField(verbose_name='Нужно подтвердить?', default=False)
     read = models.BooleanField(verbose_name='Прочитано?', default=False)
 
-    targets = (
-        (1, 'Тайтл'),
-        (2, 'Глава'),
-        (3, 'Комментарий'),
-        (4, 'Пополнение'),
-        (5, 'Специальное предложение'),
-        (6, 'Бейдж')
-    )
-
     image = models.CharField(verbose_name='Картинка уведомления', max_length=1000, null=True, default=None)
-    text = models.CharField(verbose_name='Текст уведомления', max_length=1000)
+
+    text = models.CharField(verbose_name='Текст уведомления', max_length=1000, null=True, default=None)
+    text_key = models.ForeignKey(verbose_name='Ключ текста', to='notifications.NotificationText', on_delete=models.SET_NULL, null=True, default=None)
+
     link = models.CharField(verbose_name='Ссылка', max_length=1000, null=True, default=None)
 
     target_id = models.BigIntegerField(verbose_name='Таргет', null=True, default=None)
@@ -52,6 +55,15 @@ class UserMassNotifications(models.Model):
         verbose_name_plural = 'Рассылки пользователю'
 
 
+class NotificationText(models.Model):
+    text = models.TextField(verbose_name='Текст уведомления')
+
+    class Meta:
+        db_table = 'notification_texts'
+        verbose_name = 'Текст уведомления'
+        verbose_name_plural = 'Тексты уведомлений'
+
+
 class MassNotifications(models.Model):
     types = (
         (1, 'Обновление'),
@@ -66,15 +78,6 @@ class MassNotifications(models.Model):
 
     type = models.IntegerField(verbose_name='Тип списка', choices=types)
     action = models.IntegerField(verbose_name='Действие', choices=actions, default=1)
-
-    targets = (
-        (1, 'Тайтл'),
-        (2, 'Глава'),
-        (3, 'Комментарий'),
-        (4, 'Пополнение'),
-        (5, 'Специальное предложение'),
-        (6, 'Бейдж')
-    )
 
     image = models.CharField(verbose_name='Картинка уведомления', max_length=1000, null=True, default=None)
     text = models.CharField(verbose_name='Текст уведомления', max_length=1000)
@@ -118,6 +121,7 @@ class TitleMock(models.Model):
 class ChapterMock(models.Model):
     index = models.IntegerField(verbose_name='Номер главы')
     title = models.ForeignKey(verbose_name='Тайтл', to='notifications.TitleMock', on_delete=models.CASCADE)
+    is_paid = models.BooleanField(verbose_name='Платный?', default=False)
 
     class Meta:
         db_table = 'chapters'
@@ -182,3 +186,13 @@ def create_user_notifications(sender, instance, created, **kwargs):
         collection.insert_one(UserNotificationConfig(user_id=instance.id).model_dump())
 
         client.close()
+
+
+@receiver(pre_delete, sender=User)
+def delete_user_notifications(sender, instance, **kwargs):
+    client = MongoClient(**MONGODB_AUTHPARAMS)
+    db = client.get_database('admin')
+    collection = db.get_collection("user_notification_settings")
+    collection.delete_one({"user_id": instance.id})
+
+    client.close()

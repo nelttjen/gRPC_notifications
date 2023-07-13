@@ -1,6 +1,5 @@
 from django.urls import path
 
-from .api.create_notifications import CreateNotificationsView
 from .api.test import TestView
 from .api.emit_action import ActionEmit
 

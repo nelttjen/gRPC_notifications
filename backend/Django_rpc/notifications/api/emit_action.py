@@ -9,7 +9,7 @@ class ActionEmit(APIView):
     def _process_request(self, request, data_source):
         data = getattr(request, data_source)
 
-        if (action := data.get('action')) not in ['title_new_name', 'title_new_chapter', 'site_notification']:
+        if (action := data.get('action')) not in ['title_new_name', 'title_new_chapter', 'site_notification', 'title_chapter_free']:
             return Response({"msg": "action forbidden"}, status=400)
 
         if action == 'title_new_name':
@@ -18,13 +18,16 @@ class ActionEmit(APIView):
                 target_id=data.get('target_id'),
                 target_type=1,
                 not_type=0,
+                important=bool(int(data.get('important', 0))),
+                text=data.get('prev_name', 'Предыдущее название'),
             )
-        elif action == 'title_new_chapter':
+        elif action in ('title_new_chapter', 'title_chapter_free'):
             grpc_client = NotificationActionRPC(
-                action='title_new_chapter',
+                action=action,
                 target_id=data.get('target_id'),
                 target_type=2,
-                not_type=0
+                not_type=0,
+                important=bool(int(data.get('important', 0))),
             )
         elif action == 'site_notification':
             grpc_client = NotificationActionRPC(
@@ -33,8 +36,9 @@ class ActionEmit(APIView):
                 target_type=None,
                 not_type=2,
                 text=data.get('text', 'Site notification'),
-                image=data.get('image', None),
-                link=data.get('link', None),
+                image=data.get('image', ''),
+                link=data.get('link', ''),
+                important=bool(int(data.get('important', 0))),
             )
 
         response = grpc_client.perform_request()

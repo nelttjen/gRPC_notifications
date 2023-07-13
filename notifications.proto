@@ -33,14 +33,17 @@ message NotificationCreateRequest {
 
 message NotificationCreateManualRequest {
   repeated int32 user_ids = 1;
+  string settings_key = 2;
 
-  optional uint64 target_id = 2;
-  optional uint32 target_type = 3;
-  optional string text = 4;
-  bool important = 5;
+  optional uint64 target_id = 3;
+  optional uint32 target_type = 4;
+  string text = 5;
+  bool text_as_model = 6;
+  bool important = 7;
+  bool confirmation = 8;
 
-  optional string link = 6;
-  optional string image = 7;
+  optional string link = 9;
+  optional string image = 10;
 }
 
 message NotificationCreateResponse {

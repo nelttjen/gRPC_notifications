@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	v1 "notification_grpc/api"
-	"notification_grpc/internal/config"
 	cfg "notification_grpc/internal/config"
 	notificationRPC "notification_grpc/internal/grpc/notifications"
 	"notification_grpc/pkg/env"
@@ -46,7 +45,7 @@ func (a *app) LoadEnv(path string) error {
 }
 
 func (a *app) Run() (err error) {
-	lis, err := net.Listen(config.PROTOCOL, config.PORT)
+	lis, err := net.Listen(cfg.PROTOCOL, cfg.PORT)
 	if err != nil {
 		return err
 	}
@@ -62,7 +61,7 @@ func (a *app) Run() (err error) {
 		return err
 	}
 
-	log.Println("Start serving...")
+	log.Println("INFO: Initialization done, Start serving...")
 
 	if err := a.server.Serve(lis); err != nil {
 		return err

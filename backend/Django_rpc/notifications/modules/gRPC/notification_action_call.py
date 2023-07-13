@@ -34,11 +34,11 @@ class NotificationActionRPC(BaseRPCRequestClass):
             text=self.text,
         ).as_grpc_request()
 
-
-        print(request.target_type)
         response = stub.CreateNotificationsAction(request)
         self.process_response(response)
         return response
 
     def process_response(self, response: pb2.NotificationCreateResponse) -> bool:
-        return True
+        if not response.is_created:
+            print('Error creating mass notification')
+        return response.is_created
