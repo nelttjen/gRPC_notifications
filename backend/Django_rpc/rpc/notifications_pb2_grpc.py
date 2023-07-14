@@ -44,6 +44,11 @@ class CreateNotificationsStub(object):
                 request_serializer=notifications__pb2.NotificationManageRequest.SerializeToString,
                 response_deserializer=notifications__pb2.NotificationManageResponse.FromString,
                 )
+        self.CountNotifications = channel.unary_unary(
+                '/api.CreateNotifications/CountNotifications',
+                request_serializer=notifications__pb2.UserCountNotificationRequest.SerializeToString,
+                response_deserializer=notifications__pb2.UserCountNotificationResponse.FromString,
+                )
 
 
 class CreateNotificationsServicer(object):
@@ -85,6 +90,12 @@ class CreateNotificationsServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CountNotifications(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_CreateNotificationsServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -117,6 +128,11 @@ def add_CreateNotificationsServicer_to_server(servicer, server):
                     servicer.DeleteNotifications,
                     request_deserializer=notifications__pb2.NotificationManageRequest.FromString,
                     response_serializer=notifications__pb2.NotificationManageResponse.SerializeToString,
+            ),
+            'CountNotifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.CountNotifications,
+                    request_deserializer=notifications__pb2.UserCountNotificationRequest.FromString,
+                    response_serializer=notifications__pb2.UserCountNotificationResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -227,5 +243,22 @@ class CreateNotifications(object):
         return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/DeleteNotifications',
             notifications__pb2.NotificationManageRequest.SerializeToString,
             notifications__pb2.NotificationManageResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CountNotifications(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/api.CreateNotifications/CountNotifications',
+            notifications__pb2.UserCountNotificationRequest.SerializeToString,
+            notifications__pb2.UserCountNotificationResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

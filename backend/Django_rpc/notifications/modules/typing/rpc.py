@@ -61,3 +61,23 @@ class NotificationForUsers(pydantic.BaseModel):
                 data[item] = getattr(self, item)
 
         return pb2.NotificationCreateManualRequest(**data)
+
+
+class UserNotification(pydantic.BaseModel):
+    user_id: int
+    page: int
+    count: int
+
+    only_important: bool = pydantic.Field(default=False)
+    read: bool = pydantic.Field(default=False)
+
+    def as_grpc_request(self) -> pb2.UserNotificationsRequest:
+        data = {
+            'user_id': self.user_id,
+            'page': self.page,
+            'count': self.count,
+            'only_important': self.only_important,
+            'read': self.read,
+        }
+
+        return pb2.UserNotificationsRequest(**data)

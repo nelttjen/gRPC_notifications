@@ -20,6 +20,7 @@ targets = (
 # Create your models here.
 class UserNotifications(models.Model):
     user = models.ForeignKey(verbose_name='Пользователь', to=User, on_delete=models.CASCADE)
+    action = models.CharField(verbose_name='Действие', max_length=100, null=True, default=None)
 
     confirmation = models.BooleanField(verbose_name='Нужно подтвердить?', default=False)
     read = models.BooleanField(verbose_name='Прочитано?', default=False)
