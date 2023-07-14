@@ -9,16 +9,15 @@ class EmitForUserView(APIView):
     def _process_request(self, request, source):
         data = getattr(request, source)
 
-        actions = []
-
-        if action := data.get('action') not in actions:
-            return Response(status=400, data={'msg': 'action forbidden'})
+        # actions = []
+        #
+        # if action := data.get('action') not in actions:
+        #     return Response(status=400, data={'msg': 'action forbidden'})
 
         if not isinstance((ids := data.get('user_ids')), list):
             return Response(status=400, data={'msg': 'user_ids must be a list'})
 
         required = ['sets_key', 'text']
-
 
         if not all([data.get(key) for key in ['sets_key', 'text']]):
             return Response(status=400, data={'msg': f'required keys {", ".join(required)} not found'})

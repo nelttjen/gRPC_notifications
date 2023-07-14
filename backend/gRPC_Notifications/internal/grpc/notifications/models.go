@@ -24,11 +24,12 @@ type UserNotification struct {
 	UserId           uint64           `gorm:"column:user_id"`
 	TargetId         uint64           `gorm:"column:target_id"`
 	TargetType       uint32           `gorm:"column:target_type"`
-	Image            string           `gorm:"column:image"`
+	Action           string           `gorm:"column:action"`
 	Text             string           `gorm:"column:text"`
-	TextId           *uint64          `gorm:"column:text_id"`
+	TextId           *uint64          `gorm:"column:text_key_id"`
 	NotificationText NotificationText `gorm:"foreignkey:TextId"`
 	Link             string           `gorm:"column:link"`
+	Image            string           `gorm:"column:image"`
 	Important        bool             `gorm:"column:important"`
 	Confirmation     bool             `gorm:"column:confirmation"`
 	Read             bool             `gorm:"column:read"`

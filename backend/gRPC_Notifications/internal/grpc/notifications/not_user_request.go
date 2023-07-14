@@ -20,7 +20,7 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 		return false
 	}
 
-	if request.UserIds == nil || len(request.UserIds) == 0 || request.Text == nil {
+	if request.UserIds == nil || len(request.UserIds) == 0 {
 		log.Printf("WARNING: get empty list of user IDs or text is empty, request ignored")
 		return true
 	}
@@ -79,7 +79,7 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 	var userNots []*UserNotification
 
 	useTargets := request.TargetId != nil && request.TargetType != nil
-	useText, err := getTextModelOrCreate(tx, *request.Text, request)
+	useText, err := getTextModelOrCreate(tx, request.Text, request)
 
 	if err != nil {
 		return false
@@ -110,7 +110,7 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 		if useText != nil {
 			newNotification.TextId = &useText.ID
 		} else {
-			newNotification.Text = *request.Text
+			newNotification.Text = request.Text
 		}
 
 		userNots = append(userNots, newNotification)
@@ -128,7 +128,7 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 		return false
 	}
 
-	log.Printf("INFO: created %d user notifications", len(userNots))
+	log.Printf("INFO: Created %d user notifications", len(userNots))
 
 	return true
 }
@@ -140,21 +140,7 @@ func getTextModelOrCreate(tx *gorm.DB, text string, request *v1.NotificationCrea
 
 	textModel := &NotificationText{}
 
-	tx = tx.Where("text ILIKE ?", fmt.Sprintf("%%%s%%", text)).First(textModel)
-
-	if err := tx.Error; err != nil {
-		log.Printf("ERROR: get text model: %s", err)
-		return nil, err
-	}
-
-	if textModel.ID == 0 {
-		textModel.Text = text
-		tx = tx.Create(textModel)
-		if err := tx.Error; err != nil {
-			log.Printf("ERROR: creating text model: %s", err)
-			return nil, err
-		}
-	}
+	tx = tx.Where("text ILIKE ?", fmt.Sprintf("%%%s%%", text)).FirstOrCreate(textModel, &NotificationText{Text: text})
 
 	return textModel, nil
 }

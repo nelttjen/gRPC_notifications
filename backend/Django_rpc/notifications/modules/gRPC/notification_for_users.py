@@ -28,7 +28,7 @@ class NotificationForUsersRPC(BaseRPCRequestClass):
 
         request = NotificationForUsers(
             user_ids=self.user_ids,
-            sets_key=self.sets_key,
+            settings_key=self.sets_key,
             text=self.text,
             text_as_model=self.text_as_model,
             important=self.important,
