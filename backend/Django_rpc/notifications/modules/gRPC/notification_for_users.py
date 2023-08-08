@@ -3,7 +3,7 @@ import rpc.notifications_pb2 as pb2
 import rpc.notifications_pb2_grpc as pb2_grpc
 
 from drpc.settings import GRPC_NOTIFICATIONS_SERVICE_CONNECT_LINK
-from notifications.modules.typing.rpc import NotificationForUsers
+from notifications.modules.typing.rpc.request import NotificationForUsers
 from notifications.modules.gRPC import BaseRPCRequestClass
 
 

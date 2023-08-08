@@ -1,7 +1,10 @@
+import datetime
+
 import pydantic
+
 import rpc.notifications_pb2 as pb2
 
-from typing import Optional, List
+from typing import Optional, List, Union
 
 
 class NotificationAction(pydantic.BaseModel):
@@ -81,3 +84,29 @@ class UserNotification(pydantic.BaseModel):
         }
 
         return pb2.UserNotificationsRequest(**data)
+
+
+class UserMassNotification(pydantic.BaseModel):
+    user_id: int
+    page: int
+    count: int
+    not_type: int
+
+    action: Optional[str]
+    only_important: bool = pydantic.Field(default=False)
+    read: bool = pydantic.Field(default=False)
+
+    def as_grpc_request(self) -> pb2.UserMassNotificationRequest:
+        data = {
+            'user_id': self.user_id,
+            'page': self.page,
+            'count': self.count,
+            'type': self.not_type,
+            'only_important': self.only_important,
+            'read': self.read,
+        }
+
+        if self.action is not None:
+            data['action'] = self.action
+
+        return pb2.UserMassNotificationRequest(**data)

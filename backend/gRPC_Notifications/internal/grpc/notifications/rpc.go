@@ -68,3 +68,17 @@ func (s *NotificationService) GetNotifications(ctx context.Context, req *v1.User
 	}
 	return
 }
+
+func (s *NotificationService) GetMassNotifications(ctx context.Context, req *v1.UserMassNotificationRequest) (response *v1.UserMassNotificationResponse, err error) {
+	dbConn, err := PrepareTransaction()
+	if err != nil {
+		return &v1.UserMassNotificationResponse{}, err
+	}
+
+	response, err = GetUserMassNotifications(dbConn, req)
+	if err != nil {
+		log.Printf("Failed to get user mass notifications for user_id %d: %v", req.UserId, err)
+	}
+
+	return
+}

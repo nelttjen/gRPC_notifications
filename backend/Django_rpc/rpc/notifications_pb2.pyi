@@ -113,8 +113,8 @@ class UserMassNotificationRequest(_message.Message):
 class UserMassNotificationResponse(_message.Message):
     __slots__ = ["notifications"]
     NOTIFICATIONS_FIELD_NUMBER: _ClassVar[int]
-    notifications: _containers.RepeatedCompositeFieldContainer[UserMassNotification]
-    def __init__(self, notifications: _Optional[_Iterable[_Union[UserMassNotification, _Mapping]]] = ...) -> None: ...
+    notifications: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Struct]
+    def __init__(self, notifications: _Optional[_Iterable[_Union[_struct_pb2.Struct, _Mapping]]] = ...) -> None: ...
 
 class UserNotificationsRequest(_message.Message):
     __slots__ = ["count", "only_important", "page", "read", "type", "user_id"]

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from notifications.modules.gRPC.notification_action_call import NotificationActionRPC
 
 
-class ActionEmit(APIView):
+class ActionEmitView(APIView):
 
     def _process_request(self, request, data_source):
         data = getattr(request, data_source)
@@ -17,7 +17,7 @@ class ActionEmit(APIView):
                 action='title_new_name',
                 target_id=data.get('target_id'),
                 target_type=1,
-                not_type=0,
+                not_type=1,
                 important=bool(int(data.get('important', 0))),
                 text=data.get('prev_name', 'Предыдущее название'),
             )
@@ -26,7 +26,7 @@ class ActionEmit(APIView):
                 action=action,
                 target_id=data.get('target_id'),
                 target_type=2,
-                not_type=0,
+                not_type=1,
                 important=bool(int(data.get('important', 0))),
             )
         elif action == 'site_notification':
@@ -34,7 +34,7 @@ class ActionEmit(APIView):
                 action='site_notification',
                 target_id=None,
                 target_type=None,
-                not_type=2,
+                not_type=3,
                 text=data.get('text', 'Site notification'),
                 image=data.get('image', ''),
                 link=data.get('link', ''),

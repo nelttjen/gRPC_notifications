@@ -85,13 +85,6 @@ func actionTitleNewName(dbConnection database.PostgresConnection, request *v1.No
 		return true
 	}
 
-	action, err := cfg.GetActionByKey(request.Action)
-
-	if err != nil {
-		log.Printf("ERROR: RPC got invalid action: %v\n", err)
-		return false
-	}
-
 	prevName := "Неизвестно"
 	if *request.Text != "" {
 		prevName = *request.Text
@@ -102,7 +95,7 @@ func actionTitleNewName(dbConnection database.PostgresConnection, request *v1.No
 		TargetType: *request.TargetType,
 		Important:  request.Important,
 		Type:       request.Type,
-		Action:     action,
+		Action:     request.Action,
 		Text:       fmt.Sprintf("У тайтла в ваших закладках изменилось название. Прежнее название: %s, Новое название: %s", prevName, title.Name),
 		Link:       fmt.Sprintf("/titles/%d", *request.TargetId),
 		Date:       time.Now(),
@@ -128,7 +121,6 @@ func actionSiteNotification(dbConnection database.PostgresConnection, request *v
 		return false
 	}
 
-	intAction, err := cfg.GetActionByKey(request.Action)
 	if err != nil {
 		log.Printf("ERROR: RPC got invalid action: %v\n", err)
 		return false
@@ -143,7 +135,7 @@ func actionSiteNotification(dbConnection database.PostgresConnection, request *v
 		Image:     *request.Image,
 		Important: request.Important,
 		Type:      request.Type,
-		Action:    intAction,
+		Action:    request.Action,
 		Date:      time.Now(),
 	}
 
@@ -290,7 +282,7 @@ func chapterNotification(dbConnection database.PostgresConnection, request *v1.N
 	}
 
 	chapter := &Chapter{}
-	chapterResult := postgresConnection.Preload("Title").Where(&Chapter{ID: *request.TargetId}).First(chapter)
+	chapterResult := postgresConnection.Joins("Title").Where(&Chapter{ID: *request.TargetId}).First(chapter)
 
 	if chapter.ID == 0 {
 		log.Printf("ERROR: Chapter not found: %d\n", *request.TargetId)
@@ -319,11 +311,6 @@ func chapterNotification(dbConnection database.PostgresConnection, request *v1.N
 		return true
 	}
 
-	intAction, err := cfg.GetActionByKey(request.Action)
-	if err != nil {
-		log.Printf("ERROR: RPC got invalid action: %v\n", err)
-		return false
-	}
 	var text string
 
 	if request.Action == cfg.ActionChapterFree {
@@ -343,7 +330,7 @@ func chapterNotification(dbConnection database.PostgresConnection, request *v1.N
 		Link:       fmt.Sprintf("/titles/%d/chapters/%d", *chapter.TitleId, chapter.ID),
 		Important:  request.Important,
 		Type:       request.Type,
-		Action:     intAction,
+		Action:     request.Action,
 		Date:       time.Time{},
 	}
 	postgresTransaction.Create(newNotification)

@@ -86,7 +86,7 @@ message UserMassNotificationRequest {
 }
 
 message UserMassNotificationResponse {
-  repeated UserMassNotification notifications = 1;
+  repeated google.protobuf.Struct notifications = 1;
 }
 
 message NotificationManageRequest {

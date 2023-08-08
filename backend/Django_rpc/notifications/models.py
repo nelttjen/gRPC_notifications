@@ -71,14 +71,9 @@ class MassNotifications(models.Model):
         (2, 'Социальное'),
         (3, 'Важное'),
     )
-    actions = (
-        (1, 'Глава залита'),
-        (2, 'Глава стала бесплатной'),
-        (3, 'Уведомление сайта'),
-    )
 
     type = models.IntegerField(verbose_name='Тип списка', choices=types)
-    action = models.IntegerField(verbose_name='Действие', choices=actions, default=1)
+    action = models.CharField(verbose_name='Действие', max_length=256, blank=True, null=True)
 
     image = models.CharField(verbose_name='Картинка уведомления', max_length=1000, null=True, default=None)
     text = models.CharField(verbose_name='Текст уведомления', max_length=1000)
