@@ -2,3 +2,4 @@
 notifications.proto
 struct.proto
 .env
+logs

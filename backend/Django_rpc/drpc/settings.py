@@ -136,4 +136,52 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[%(levelname)s] %(asctime)s - %(module)s (%(process)d %(thread)d): %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        },
+        "info": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "drpc_info.log",
+            "formatter": "verbose"
+        },
+        "error": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "drpc_error.log",
+            "formatter": "verbose"
+        }
+    },
+    "loggers": {
+        "error": {
+            "handlers": ["error", ],
+            "level": "ERROR",
+            "propagate": True
+        },
+        "all": {
+            "handlers": ["console", "info"],
+            "level": "INFO",
+            "propagate": True
+        },
+        "django": {
+            "handlers": ["console", ],
+            "level": "INFO",
+            "propagate": True
+        }
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO"
+    }
+}

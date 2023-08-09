@@ -13,8 +13,7 @@ service CreateNotifications {
   rpc GetNotifications (UserNotificationsRequest) returns (UserNotificationsResponse);
   rpc GetMassNotifications (UserMassNotificationRequest) returns (UserMassNotificationResponse);
 
-  rpc MarkAsReadNotifications (NotificationManageRequest) returns (NotificationManageResponse);
-  rpc DeleteNotifications (NotificationManageRequest) returns (NotificationManageResponse);
+  rpc ManageNotifications (NotificationManageRequest) returns (NotificationManageResponse);
 
   rpc CountNotifications (UserCountNotificationRequest) returns (UserCountNotificationResponse);
 }
@@ -92,6 +91,8 @@ message UserMassNotificationResponse {
 message NotificationManageRequest {
   repeated int32 notification_ids = 1;
   int32 user_id = 2;
+  string action = 3;
+  string notification_type = 4;
 }
 
 message NotificationManageResponse {

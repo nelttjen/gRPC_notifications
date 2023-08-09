@@ -82,12 +82,15 @@ func (c *connection) formatConnection(redactPassword bool) string {
 
 func (c *connection) MakeConnection() error {
 	log.Printf("INFO: Connecting to postgres database using auth string: %s\n", c.formatConnection(true))
+
 	conn, err := gorm.Open(postgres.Open(c.formatConnection(false)), &gorm.Config{})
 	if err != nil {
 		return err
 	}
 	c.DBConnection = conn
+
 	log.Printf("INFO: Connected to postgres database\n")
+
 	return nil
 }
 

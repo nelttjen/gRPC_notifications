@@ -22,8 +22,7 @@ type CreateNotificationsClient interface {
 	CreateNotificationForUsers(ctx context.Context, in *NotificationCreateManualRequest, opts ...grpc.CallOption) (*NotificationCreateResponse, error)
 	GetNotifications(ctx context.Context, in *UserNotificationsRequest, opts ...grpc.CallOption) (*UserNotificationsResponse, error)
 	GetMassNotifications(ctx context.Context, in *UserMassNotificationRequest, opts ...grpc.CallOption) (*UserMassNotificationResponse, error)
-	MarkAsReadNotifications(ctx context.Context, in *NotificationManageRequest, opts ...grpc.CallOption) (*NotificationManageResponse, error)
-	DeleteNotifications(ctx context.Context, in *NotificationManageRequest, opts ...grpc.CallOption) (*NotificationManageResponse, error)
+	ManageNotifications(ctx context.Context, in *NotificationManageRequest, opts ...grpc.CallOption) (*NotificationManageResponse, error)
 	CountNotifications(ctx context.Context, in *UserCountNotificationRequest, opts ...grpc.CallOption) (*UserCountNotificationResponse, error)
 }
 
@@ -71,18 +70,9 @@ func (c *createNotificationsClient) GetMassNotifications(ctx context.Context, in
 	return out, nil
 }
 
-func (c *createNotificationsClient) MarkAsReadNotifications(ctx context.Context, in *NotificationManageRequest, opts ...grpc.CallOption) (*NotificationManageResponse, error) {
+func (c *createNotificationsClient) ManageNotifications(ctx context.Context, in *NotificationManageRequest, opts ...grpc.CallOption) (*NotificationManageResponse, error) {
 	out := new(NotificationManageResponse)
-	err := c.cc.Invoke(ctx, "/api.CreateNotifications/MarkAsReadNotifications", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *createNotificationsClient) DeleteNotifications(ctx context.Context, in *NotificationManageRequest, opts ...grpc.CallOption) (*NotificationManageResponse, error) {
-	out := new(NotificationManageResponse)
-	err := c.cc.Invoke(ctx, "/api.CreateNotifications/DeleteNotifications", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.CreateNotifications/ManageNotifications", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,8 +96,7 @@ type CreateNotificationsServer interface {
 	CreateNotificationForUsers(context.Context, *NotificationCreateManualRequest) (*NotificationCreateResponse, error)
 	GetNotifications(context.Context, *UserNotificationsRequest) (*UserNotificationsResponse, error)
 	GetMassNotifications(context.Context, *UserMassNotificationRequest) (*UserMassNotificationResponse, error)
-	MarkAsReadNotifications(context.Context, *NotificationManageRequest) (*NotificationManageResponse, error)
-	DeleteNotifications(context.Context, *NotificationManageRequest) (*NotificationManageResponse, error)
+	ManageNotifications(context.Context, *NotificationManageRequest) (*NotificationManageResponse, error)
 	CountNotifications(context.Context, *UserCountNotificationRequest) (*UserCountNotificationResponse, error)
 	mustEmbedUnimplementedCreateNotificationsServer()
 }
@@ -128,11 +117,8 @@ func (UnimplementedCreateNotificationsServer) GetNotifications(context.Context, 
 func (UnimplementedCreateNotificationsServer) GetMassNotifications(context.Context, *UserMassNotificationRequest) (*UserMassNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMassNotifications not implemented")
 }
-func (UnimplementedCreateNotificationsServer) MarkAsReadNotifications(context.Context, *NotificationManageRequest) (*NotificationManageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MarkAsReadNotifications not implemented")
-}
-func (UnimplementedCreateNotificationsServer) DeleteNotifications(context.Context, *NotificationManageRequest) (*NotificationManageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteNotifications not implemented")
+func (UnimplementedCreateNotificationsServer) ManageNotifications(context.Context, *NotificationManageRequest) (*NotificationManageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ManageNotifications not implemented")
 }
 func (UnimplementedCreateNotificationsServer) CountNotifications(context.Context, *UserCountNotificationRequest) (*UserCountNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CountNotifications not implemented")
@@ -222,38 +208,20 @@ func _CreateNotifications_GetMassNotifications_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CreateNotifications_MarkAsReadNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CreateNotifications_ManageNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NotificationManageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CreateNotificationsServer).MarkAsReadNotifications(ctx, in)
+		return srv.(CreateNotificationsServer).ManageNotifications(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.CreateNotifications/MarkAsReadNotifications",
+		FullMethod: "/api.CreateNotifications/ManageNotifications",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CreateNotificationsServer).MarkAsReadNotifications(ctx, req.(*NotificationManageRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CreateNotifications_DeleteNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NotificationManageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CreateNotificationsServer).DeleteNotifications(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.CreateNotifications/DeleteNotifications",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CreateNotificationsServer).DeleteNotifications(ctx, req.(*NotificationManageRequest))
+		return srv.(CreateNotificationsServer).ManageNotifications(ctx, req.(*NotificationManageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -300,12 +268,8 @@ var CreateNotifications_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CreateNotifications_GetMassNotifications_Handler,
 		},
 		{
-			MethodName: "MarkAsReadNotifications",
-			Handler:    _CreateNotifications_MarkAsReadNotifications_Handler,
-		},
-		{
-			MethodName: "DeleteNotifications",
-			Handler:    _CreateNotifications_DeleteNotifications_Handler,
+			MethodName: "ManageNotifications",
+			Handler:    _CreateNotifications_ManageNotifications_Handler,
 		},
 		{
 			MethodName: "CountNotifications",

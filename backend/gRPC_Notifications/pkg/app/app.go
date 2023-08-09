@@ -8,6 +8,7 @@ import (
 	cfg "notification_grpc/internal/config"
 	notificationRPC "notification_grpc/internal/grpc/notifications"
 	"notification_grpc/pkg/env"
+	"notification_grpc/pkg/logger"
 )
 
 var _ App = &app{}
@@ -45,6 +46,8 @@ func (a *app) LoadEnv(path string) error {
 }
 
 func (a *app) Run() (err error) {
+	logger.InitLoggers()
+
 	lis, err := net.Listen(cfg.PROTOCOL, cfg.PORT)
 	if err != nil {
 		return err

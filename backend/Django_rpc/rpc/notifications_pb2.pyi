@@ -57,12 +57,16 @@ class NotificationCreateResponse(_message.Message):
     def __init__(self, is_created: bool = ...) -> None: ...
 
 class NotificationManageRequest(_message.Message):
-    __slots__ = ["notification_ids", "user_id"]
+    __slots__ = ["action", "notification_ids", "notification_type", "user_id"]
+    ACTION_FIELD_NUMBER: _ClassVar[int]
     NOTIFICATION_IDS_FIELD_NUMBER: _ClassVar[int]
+    NOTIFICATION_TYPE_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
+    action: str
     notification_ids: _containers.RepeatedScalarFieldContainer[int]
+    notification_type: str
     user_id: int
-    def __init__(self, notification_ids: _Optional[_Iterable[int]] = ..., user_id: _Optional[int] = ...) -> None: ...
+    def __init__(self, notification_ids: _Optional[_Iterable[int]] = ..., user_id: _Optional[int] = ..., action: _Optional[str] = ..., notification_type: _Optional[str] = ...) -> None: ...
 
 class NotificationManageResponse(_message.Message):
     __slots__ = ["success"]

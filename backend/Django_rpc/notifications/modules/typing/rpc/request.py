@@ -110,3 +110,20 @@ class UserMassNotification(pydantic.BaseModel):
             data['action'] = self.action
 
         return pb2.UserMassNotificationRequest(**data)
+
+
+class UserNotificationAction(pydantic.BaseModel):
+    user_id: int
+    action: str
+    notification_ids: List[int]
+    notification_type: str
+
+    def as_grpc_request(self) -> pb2.NotificationManageRequest:
+        data = {
+            'user_id': self.user_id,
+            'action': self.action,
+            'notification_ids': self.notification_ids,
+            'notification_type': self.notification_type,
+        }
+
+        return pb2.NotificationManageRequest(**data)
