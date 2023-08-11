@@ -3,11 +3,12 @@ package database
 import (
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 	cfg "notification_grpc/internal/config"
 	myenv "notification_grpc/pkg/env"
+	"notification_grpc/pkg/logger"
 )
 
 var _ MongoClient = &mongoClient{}
@@ -47,7 +48,7 @@ func (c *mongoClient) MakeConnection() error {
 
 	authString := fmt.Sprintf("mongodb://%s:%d", host, port)
 
-	log.Println("INFO: Connecting to MongoDB using auth string: ", authString)
+	logger.LogflnIfExists("debug", "Connecting to mongo with auth string: %s", logrus.DebugLevel, cfg.LoggerLevelAll, authString)
 
 	clientOptions := options.Client().ApplyURI(authString).SetAuth(options.Credential{
 		AuthMechanism: "SCRAM-SHA-256",
@@ -68,7 +69,7 @@ func (c *mongoClient) MakeConnection() error {
 	}
 
 	c.Connection = client
-	log.Printf("INFO: Connected to MongoDB succesed")
+	logger.LogflnIfExists("debug", "Connected to MongoDB succesed", logrus.DebugLevel, cfg.LoggerLevelAll)
 	return nil
 }
 

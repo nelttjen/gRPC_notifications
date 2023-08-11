@@ -3,45 +3,46 @@ package notifications
 import (
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gorm.io/gorm"
-	"log"
 	v1 "notification_grpc/api"
 	cfg "notification_grpc/internal/config"
 	"notification_grpc/pkg/database"
+	"notification_grpc/pkg/logger"
 	"time"
 )
 
 func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.NotificationCreateManualRequest) bool {
 	tx, err := dbConnection.GetDBTransaction()
 	if err != nil {
-		log.Printf("ERROR: getting DB transaction: %s", err)
+		logger.LogflnIfExists("error", "Could not get DB transaction: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		return false
 	}
 
 	if request.UserIds == nil || len(request.UserIds) == 0 {
-		log.Printf("WARNING: get empty list of user IDs or text is empty, request ignored")
+		logger.LoglnIfExists("info", "get empty list of user IDs or text is empty, request ignored", logrus.WarnLevel, cfg.LoggerLevelImportant)
 		return true
 	}
 
 	mongoClient := database.NewMongoConnection()
 	err = mongoClient.MakeConnection()
 	if err != nil {
-		log.Printf("ERROR: connecting to MongoDB: %s", err)
+		logger.LogflnIfExists("error", "Could not connect to MongoDB: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		return false
 	}
 
 	defer func(cl database.MongoClient) {
 		err := cl.CloseConnection()
 		if err != nil {
-			log.Printf("Error closing MongoDB connection: %s", err)
+			logger.LogflnIfExists("error", "Could not close MongoDB connection: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		}
 	}(mongoClient)
 
 	collection, err := mongoClient.GetCollectionFromAdmin("user_notification_settings")
 	if err != nil {
-		log.Printf("ERROR: getting MongoDB collection: %s", err)
+		logger.LogflnIfExists("error", "Could not get MongoDB collection user_notification_settings: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		return false
 	}
 	ctx := context.Background()
@@ -55,13 +56,13 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
-		log.Printf("ERROR: getting MongoDB cursor: %s", err)
+		logger.LogflnIfExists("error", "Could not get MongoDB cursor: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		return false
 	}
 	defer func(c *mongo.Cursor, ctx context.Context) {
 		err := c.Close(ctx)
 		if err != nil {
-			log.Printf("Error closing MongoDB cursor: %s", err)
+			logger.LogflnIfExists("error", "Could not close MongoDB cursor: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		}
 	}(cursor, ctx)
 
@@ -70,7 +71,7 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 		user := &UserNotificationConfig{}
 		err := cursor.Decode(user)
 		if err != nil {
-			log.Printf("ERROR: decoding MongoDB cursor: %s", err)
+			logger.LogflnIfExists("error", "Could not decode MongoDB cursor: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 			return false
 		}
 		notUserIds = append(notUserIds, user.UserID)
@@ -119,16 +120,16 @@ func ProcessUserRequest(dbConnection database.PostgresConnection, request *v1.No
 	subtx := tx.CreateInBatches(userNots, cfg.DatabaseBatchSize)
 
 	if subtx.Error != nil {
-		log.Printf("ERROR: creating user notifications: %s", subtx.Error)
+		logger.LogflnIfExists("error", "Could not create user notifications: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, subtx.Error)
 		return false
 	}
 
 	if err := dbConnection.CommitTransaction(true); err != nil {
-		log.Printf("ERROR: committing DB transaction: %s", err)
+		logger.LogflnIfExists("error", "Could not commit DB transaction: %v", logrus.ErrorLevel, cfg.LoggerLevelImportant, err)
 		return false
 	}
 
-	log.Printf("INFO: Created %d user notifications", len(userNots))
+	logger.LogflnIfExists("debug", "Created %d user notifications", logrus.DebugLevel, cfg.LoggerLevelAll, len(userNots))
 
 	return true
 }
@@ -142,5 +143,5 @@ func getTextModelOrCreate(tx *gorm.DB, text string, request *v1.NotificationCrea
 
 	tx = tx.Where("text ILIKE ?", fmt.Sprintf("%%%s%%", text)).FirstOrCreate(textModel, &NotificationText{Text: text})
 
-	return textModel, nil
+	return textModel, tx.Error
 }

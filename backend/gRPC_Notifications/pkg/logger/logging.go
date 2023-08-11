@@ -175,6 +175,6 @@ func InitLoggers() {
 		}
 		loggers = append(loggers, &Logger{Logger: logger, name: key.(string)})
 	}
-	logger, _ := GetLogger("error")
-	logger.Logger.Errorln("test\n")
+
+	LogflnIfExists("info", "%d Loggers initialized", logrus.InfoLevel, config.LoggerLevelAll, len(loggers))
 }

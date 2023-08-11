@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"notification_grpc/internal/config"
 )
@@ -32,13 +33,15 @@ func LogIfExists(loggerName string, message string, level logrus.Level, required
 	logger.Log(message, level, requiredLevel)
 }
 
-func LogfIfExists(loggerName string, message string, level logrus.Level, requiredLevel uint8, args ...interface{}) {
+func LogfIfExists(loggerName string, format string, level logrus.Level, requiredLevel uint8, args ...interface{}) {
 	logger, err := GetLogger(loggerName)
 	if err != nil {
 		return
 	}
 
-	logger.Logf(message, level, requiredLevel, args...)
+	message := fmt.Sprintf(format, args...)
+
+	logger.Log(message, level, requiredLevel)
 }
 
 func LoglnIfExists(loggerName string, message string, level logrus.Level, requiredLevel uint8) {
@@ -47,5 +50,12 @@ func LoglnIfExists(loggerName string, message string, level logrus.Level, requir
 		return
 	}
 
-	logger.Logln(message, level, requiredLevel)
+	message = fmt.Sprintf("%s\n", message)
+
+	logger.Log(message, level, requiredLevel)
+}
+
+func LogflnIfExists(loggerName string, format string, level logrus.Level, requiredLevel uint8, args ...interface{}) {
+	format = fmt.Sprintf("%s\n", format)
+	LogfIfExists(loggerName, format, level, requiredLevel, args...)
 }

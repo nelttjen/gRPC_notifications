@@ -2,10 +2,12 @@ package database
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
+	"notification_grpc/internal/config"
 	"notification_grpc/pkg/env"
+	"notification_grpc/pkg/logger"
 )
 
 var _ PostgresConnection = &connection{}
@@ -81,7 +83,7 @@ func (c *connection) formatConnection(redactPassword bool) string {
 }
 
 func (c *connection) MakeConnection() error {
-	log.Printf("INFO: Connecting to postgres database using auth string: %s\n", c.formatConnection(true))
+	logger.LogflnIfExists("debug", "Connecting to postgres database using auth string: %s", logrus.DebugLevel, config.LoggerLevelAll, c.formatConnection(true))
 
 	conn, err := gorm.Open(postgres.Open(c.formatConnection(false)), &gorm.Config{})
 	if err != nil {
@@ -89,7 +91,7 @@ func (c *connection) MakeConnection() error {
 	}
 	c.DBConnection = conn
 
-	log.Printf("INFO: Connected to postgres database\n")
+	logger.LoglnIfExists("debug", "Successfully connected to postgres database", logrus.DebugLevel, config.LoggerLevelAll)
 
 	return nil
 }

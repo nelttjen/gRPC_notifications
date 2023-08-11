@@ -22,7 +22,7 @@
       "level": "TRACE"
     },
     "info": {
-      "handlers": ["info_file"],
+      "handlers": ["console", "info_file"],
       "level": "INFO"
     },
     "error": {

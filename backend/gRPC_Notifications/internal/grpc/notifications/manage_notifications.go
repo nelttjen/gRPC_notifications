@@ -2,10 +2,11 @@ package notifications
 
 import (
 	"fmt"
-	"log"
+	"github.com/sirupsen/logrus"
 	v1 "notification_grpc/api"
 	"notification_grpc/internal/config"
 	"notification_grpc/pkg/database"
+	"notification_grpc/pkg/logger"
 )
 
 func ManageNotifications(connection database.PostgresConnection, request *v1.NotificationManageRequest) error {
@@ -35,13 +36,13 @@ func ManageNotifications(connection database.PostgresConnection, request *v1.Not
 		sqlStr = fmt.Sprintf("DELETE FROM %s WHERE user_id = ? AND id IN ?", table)
 		args = []interface{}{request.UserId, request.NotificationIds}
 	default:
-		log.Printf("[ERROR]: unknown notification action: %s", request.Action)
+		logger.LogflnIfExists("error", "Unknown notification action: %s", logrus.ErrorLevel, config.LoggerLevelImportant, request.Action)
 		return fmt.Errorf("invalid action: %s", request.Action)
 	}
 
 	result := conn.Exec(sqlStr, args...)
 	if result.Error != nil {
-		log.Printf("[ERROR]: failed to execute query: %s", sqlStr)
+		logger.LogflnIfExists("error", "Failed to execute query for manage notifications: %v", logrus.ErrorLevel, config.LoggerLevelImportant, result.Error)
 		return result.Error
 	}
 

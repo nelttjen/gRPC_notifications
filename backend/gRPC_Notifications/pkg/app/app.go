@@ -1,8 +1,8 @@
 package app
 
 import (
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"log"
 	"net"
 	v1 "notification_grpc/api"
 	cfg "notification_grpc/internal/config"
@@ -19,7 +19,6 @@ type app struct {
 }
 
 type App interface {
-	RegisterServices() error
 	Run() error
 	LoadEnv(path string) error
 }
@@ -35,36 +34,25 @@ func NewApp() App {
 	return &newApp
 }
 
-func (a *app) RegisterServices() (err error) {
-	v1.RegisterCreateNotificationsServer(a.server, &notificationRPC.NotificationService{})
-	return
-}
-
 func (a *app) LoadEnv(path string) error {
 	err := a.env.LoadEnv(path)
 	return err
 }
 
 func (a *app) Run() (err error) {
-	logger.InitLoggers()
-
 	lis, err := net.Listen(cfg.PROTOCOL, cfg.PORT)
 	if err != nil {
 		return err
 	}
+
 	err = a.LoadEnv(cfg.EnvRoot)
 	if err != nil {
-		log.Fatalf("Failed to load .env file: %v", err)
+		logger.LogflnIfExists("error", "Failed to load .env file: %v", logrus.FatalLevel, cfg.LoggerLevelImportant, err)
 		return err
 	}
 
-	err = a.RegisterServices()
-
-	if err != nil {
-		return err
-	}
-
-	log.Println("INFO: Initialization done, Start serving...")
+	v1.RegisterCreateNotificationsServer(a.server, &notificationRPC.NotificationService{})
+	logger.LoglnIfExists("info", "Initialization done, Start serving...", logrus.InfoLevel, cfg.LoggerLevelImportant)
 
 	if err := a.server.Serve(lis); err != nil {
 		return err

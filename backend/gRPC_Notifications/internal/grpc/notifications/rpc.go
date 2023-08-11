@@ -2,10 +2,12 @@ package notifications
 
 import (
 	"context"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/types/known/structpb"
-	"log"
 	v1 "notification_grpc/api"
+	"notification_grpc/internal/config"
 	"notification_grpc/pkg/database"
+	"notification_grpc/pkg/logger"
 )
 
 type NotificationService struct {
@@ -35,7 +37,7 @@ func (s *NotificationService) CreateNotificationsAction(ctx context.Context, req
 	dbConn, err := PrepareTransaction()
 
 	if err != nil {
-		log.Printf("[ERROR] Error create notifications action: %v", err)
+		logger.LogflnIfExists("error", "Error create notifications action: %v", logrus.ErrorLevel, config.LoggerLevelImportant, err)
 		return response, nil
 	}
 
@@ -51,7 +53,8 @@ func (s *NotificationService) CreateNotificationForUsers(ctx context.Context, re
 	dbConn, err := PrepareTransaction()
 
 	if err != nil {
-		log.Printf("[ERROR] Error create notifications for user: %v", err)
+		logger.LogflnIfExists("error", "Error create notifications for user: %v", logrus.ErrorLevel, config.LoggerLevelImportant, err)
+
 		return response, nil
 	}
 
@@ -64,13 +67,13 @@ func (s *NotificationService) GetNotifications(ctx context.Context, req *v1.User
 	defaultResponse := &v1.UserNotificationsResponse{Notifications: make([]*structpb.Struct, 0)}
 
 	if err != nil {
-		log.Printf("[ERROR] Failed to get user notifications for user_id %d: %v", req.UserId, err)
+		logger.LogflnIfExists("error", "Failed to get user notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
 		return defaultResponse, nil
 	}
 
 	response, err = GetUserNotifications(dbConn, req)
 	if err != nil {
-		log.Printf("[ERROR] Failed to get user notifications for user_id %d: %v", req.UserId, err)
+		logger.LogflnIfExists("error", "Failed to get user notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
 		return defaultResponse, nil
 	}
 	return
@@ -80,13 +83,13 @@ func (s *NotificationService) GetMassNotifications(ctx context.Context, req *v1.
 	dbConn, err := PrepareTransaction()
 	defaultResponse := &v1.UserMassNotificationResponse{Notifications: make([]*structpb.Struct, 0)}
 	if err != nil {
-		log.Printf("[ERROR] Failed to get user mass notifications for user_id %d: %v", req.UserId, err)
+		logger.LogflnIfExists("error", "Failed to get user mass notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
 		return defaultResponse, nil
 	}
 
 	response, err = GetUserMassNotifications(dbConn, req)
 	if err != nil {
-		log.Printf("[ERROR] Failed to get user mass notifications for user_id %d: %v", req.UserId, err)
+		logger.LogflnIfExists("error", "Failed to get user mass notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
 		return defaultResponse, nil
 	}
 
@@ -100,13 +103,13 @@ func (s *NotificationService) ManageNotifications(ctx context.Context, req *v1.N
 
 	dbConn, err := PrepareTransaction()
 	if err != nil {
-		log.Printf("[ERROR] Failed to manage notifications for user_id %d: %v", req.UserId, err)
+		logger.LogflnIfExists("error", "Failed to manage notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
 		return response, nil
 	}
 
 	err = ManageNotifications(dbConn, req)
 	if err != nil {
-		log.Printf("[ERROR] Failed to manage notifications for user_id %d: %v", req.UserId, err)
+		logger.LogfIfExists("error", "Failed to manage notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
 		return response, nil
 	}
 	response.Success = true

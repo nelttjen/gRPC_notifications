@@ -5,7 +5,7 @@ const Environment = Development
 
 // logger
 const LoggerEnabled = LogEnabled
-const LoggerLevel = LoggerLevelImportant
+const LoggerLevel = LoggerLevelAll
 
 // paths
 const EnvRoot = "/home/artemy/PycharmProjects/gRPC_notifications/backend/.env"
