@@ -135,3 +135,8 @@ class UserMassNotificationResponse(pydantic.BaseModel):
         pd_model = models.get(self.notification.target_type)
         validated = pd_model.model_validate(self.notification.target)
         self.notification.target = validated.model_dump()
+
+
+class UserCountNotificationResponse(pydantic.BaseModel):
+    count: int = pydantic.Field(alias='Count')
+    has_important: bool = pydantic.Field(alias='HasImportant')

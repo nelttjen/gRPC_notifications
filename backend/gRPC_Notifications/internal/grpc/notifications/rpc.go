@@ -116,3 +116,20 @@ func (s *NotificationService) ManageNotifications(ctx context.Context, req *v1.N
 
 	return
 }
+
+func (s *NotificationService) CountNotifications(ctx context.Context, req *v1.UserCountNotificationRequest) (*v1.UserCountNotificationResponse, error) {
+	dbConn, err := PrepareTransaction()
+	response := &v1.UserCountNotificationResponse{Count: 0, HasImportant: false}
+
+	if err != nil {
+		logger.LogflnIfExists("error", "Failed to count notifications for user_id %d: %v", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId, err)
+		return response, nil
+	}
+
+	response, success := GetCountNotifications(dbConn, req.UserId)
+	if !success {
+		logger.LogflnIfExists("error", "Failed to count notifications for user_id %d - function returned no success", logrus.ErrorLevel, config.LoggerLevelImportant, req.UserId)
+	}
+
+	return response, nil
+}

@@ -57,28 +57,6 @@ func (l *Logger) shouldLog(requiredLevel uint8) bool {
 	return true
 }
 
-func (l *Logger) Log(message string, level logrus.Level, requiredLevel uint8) {
-	if !l.shouldLog(requiredLevel) {
-		return
-	}
-	l.Logger.Log(level, message)
-}
-
-func (l *Logger) Logf(message string, level logrus.Level, requiredLevel uint8, args ...interface{}) {
-	if !l.shouldLog(requiredLevel) {
-		return
-	}
-	l.Logger.Logf(level, message, args...)
-}
-
-func (l *Logger) Logln(message string, level logrus.Level, requiredLevel uint8) {
-	if !l.shouldLog(requiredLevel) {
-		return
-	}
-
-	l.Logger.Logln(level, message)
-}
-
 func InitLoggers() {
 	initialized = true
 
@@ -176,5 +154,5 @@ func InitLoggers() {
 		loggers = append(loggers, &Logger{Logger: logger, name: key.(string)})
 	}
 
-	LogflnIfExists("info", "%d Loggers initialized", logrus.InfoLevel, config.LoggerLevelAll, len(loggers))
+	LogflnIfExists("info", "%d Loggers initialized", logrus.InfoLevel, config.LoggerLevelImportant, len(loggers))
 }

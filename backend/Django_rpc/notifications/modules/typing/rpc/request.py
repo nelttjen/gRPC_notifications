@@ -127,3 +127,14 @@ class UserNotificationAction(pydantic.BaseModel):
         }
 
         return pb2.NotificationManageRequest(**data)
+
+
+class UserNotificationCount(pydantic.BaseModel):
+    user_id: int
+
+    def as_grpc_request(self) -> pb2.UserCountNotificationRequest:
+        data = {
+            'user_id': self.user_id,
+        }
+
+        return pb2.UserCountNotificationRequest(**data)

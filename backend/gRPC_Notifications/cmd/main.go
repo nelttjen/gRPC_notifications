@@ -12,6 +12,6 @@ func main() {
 	app := app.NewApp()
 
 	if err := app.Run(); err != nil {
-		logger.LogflnIfExists("error", "Failed to run server: %v", logrus.FatalLevel, config.LoggerLevelImportant, err)
+		logger.LogflnIfExists("error", "Failed to run server: %v", logrus.FatalLevel, config.LoggerLevelNone, err)
 	}
 }

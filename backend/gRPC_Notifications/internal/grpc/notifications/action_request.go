@@ -47,7 +47,7 @@ func ProcessActionRequest(dbConnection database.PostgresConnection, request *v1.
 }
 
 func actionTitleNewName(dbConnection database.PostgresConnection, request *v1.NotificationCreateRequest) bool {
-	postgresConnection, postgresTransaction, userIds, err := getDefaultsToNotifyPostgres(dbConnection, "title_new_status")
+	postgresConnection, postgresTransaction, userIds, err := getDefaultsToNotifyPostgres(dbConnection, "new_title_status")
 
 	if err != nil {
 		return false
